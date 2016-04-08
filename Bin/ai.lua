@@ -1,3 +1,73 @@
+-- collection of variables, just to get an overview.
+MAZE_WIDTH = 0
+MAZE_HEIGHT = 0
+MAZE = {}
+
+totalcopies = 0
+
+function init(MAZE_in, MAZE_HEIGHT_in, MAZE_WIDTH_in)
+	MAZE_WIDTH = MAZE_WIDTH_in
+	MAZE_HEIGHT = MAZE_HEIGHT_in
+	MAZE = formatMaze(MAZE_in)
+end
+
+-- format single array of map to map matrix
+function formatMaze(MAZE_in)
+	local temp = {}
+	for y=1, MAZE_HEIGHT, 1 do
+		temp[y] = {}
+		for x=1, MAZE_WIDTH, 1 do
+			local index = MAZE_WIDTH * (y-1) + (x-1)
+			temp[y][x] = MAZE_in[index]
+			totalcopies = totalcopies + 1
+		end
+	end
+	return temp
+end
+
+-- test function.
+function test()
+	local file = io.open("debug.txt", "w")
+	io.output(file)
+
+	io.write("MAZE_WIDTH: ")
+	io.write(MAZE_WIDTH)
+	io.write("\nMAZE_HEIGHT: ")
+	io.write(MAZE_HEIGHT)
+	io.write("\nTotal to be moved: ")
+	io.write(MAZE_WIDTH * MAZE_HEIGHT)
+	io.write("\nTotal in array: ")
+	io.write(#MAZE)
+	io.write("\n\n\n")
+
+	io.write("\nTotal elements: ")
+	io.write(MAZE_HEIGHT * MAZE_WIDTH)
+	io.write("\nTotal copies: ")
+	io.write(totalcopies)
+	io.write("\n\n\n")
+
+
+	io.write("actual MAZE_WIDTH: ")
+	io.write(#MAZE[1])
+	io.write("\nactual MAZE_HEIGHT: ")
+	io.write(#MAZE)
+	io.write("\n")
+
+	-- print out the matrix so we see its correct
+	for y=1, MAZE_HEIGHT, 1 do
+		for x=1, MAZE_WIDTH, 1 do
+			io.write(MAZE[y][x])
+		end
+		io.write("\n")
+	end
+
+	io.close(file)
+
+	-- return "this is from the lua test function"
+	return maze[11]
+end
+
+
 -- enemy is the enemy type. 0 = Blinky; 2 = Inky; 4 = Pinky; 6 = Clyde
 -- up, down, left, right are tiles to the given direction from enemy
 function ai(enemy, up, down, left, right)

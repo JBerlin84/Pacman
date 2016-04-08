@@ -27,8 +27,41 @@ bool game_preload() {
 	// Lua test
 	luaState = luaL_newstate();
 	luaL_openlibs(luaState);
+	int luaError = luaL_dofile(luaState, "ai.lua");
+	if (luaError) {
+		std::stringstream ss;
+		ss << "Error loading LUA file: " << lua_tostring(luaState, -1);
+		engine->fatalerror(ss.str());
+		return false;
+	}
 
     return true;
+}
+
+bool initializeLuaEnvironment() {
+	lua_getglobal(luaState, "init");
+	// Transfer world matrix to lua
+	lua_newtable(luaState);
+	for (int i = 0; i < MAZE_HEIGHT; i++) {
+		for (int j = 0; j < MAZE_WIDTH; j++) {
+			//int index = MAZE_HEIGHT*j + i;
+			int index = j + MAZE_WIDTH*i;
+			lua_pushnumber(luaState, index);
+			lua_pushnumber(luaState, maze[i][j]);
+			lua_settable(luaState, -3);
+		}
+	}
+	lua_pushnumber(luaState, MAZE_HEIGHT);
+	lua_pushnumber(luaState, MAZE_WIDTH);
+	lua_pcall(luaState, 3, 0, 0);
+
+	lua_getglobal(luaState, "test");
+	lua_pcall(luaState, 0, 1, 0);
+	//std::string returnValue(lua_tostring(luaState, -1));
+	double returnValue = lua_tonumber(luaState, -1);
+	lua_pop(luaState, 1);
+
+	return true;
 }
 
 bool game_init(HWND) {
@@ -83,6 +116,8 @@ bool game_init(HWND) {
 	animationTimer = new Timer();
 	animationTimer->reset();
 	
+	initializeLuaEnvironment();
+
     return true;
 }
 
@@ -400,17 +435,6 @@ void game_render() {
 
 	if (DEBUG_BUILD)
 		drawDebugInterface();
-
-
-
-	/*
-	for (int i = 0; i < 10; i++) {
-		for (int j = 0; j < 3; j++) {
-			mazeSprite->setCurrentFrame(i + j*10);
-			mazeSprite->setPosition(10 + i * 50, 10 + j * 50);
-			mazeSprite->draw();
-		}
-	}*/
 }
 
 void game_end() {
