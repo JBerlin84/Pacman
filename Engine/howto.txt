@@ -1,0 +1,15 @@
+Visual studi 2010
+
+1. project options -> configuration properties -> linker -> input -> additional dependencies
+lägg till:
+..\GameEngine\lib\MSVC.lib
+d3d9.lib
+d3dx9.lib
+dxguid.lib
+winmm.lib
+
+2. project options -> configuration properties -> VC++ Directories -> include directories
+C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include
+
+3. project options -> configuration properties -> VC++ Directories -> library directories
+C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86
