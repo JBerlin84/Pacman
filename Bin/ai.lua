@@ -8,26 +8,20 @@ blinky : holds the state for blinky
 inky : holds the state for inky
 pinky : holds the state for pinky
 clyde : holds the state for clyde
+ENEMY_TYPE_BLINKY : Check wether it is enemy type blinky
+ENEMY_TYPE_INKY : Check wether it is enemy type inky
+ENEMY_TYPE_PINKY : Check wether it is enemy type pinky
+ENEMY_TYPE_CLYDE : Check wether it is enemy type clyde
 ]]--
 
 require"data"
 MAZE = {}
--- 0 = Blinky; 2 = Inky; 4 = Pinky; 6 = Clyde
---blinky = createEnemy("Blinky", 14, 12)
---blinky = createEnemy{"Blinky", 14, 12}
---inky = createEnemy("Inky", 14,14)
---pinky = createEnemy("Pinky", 14, 16)
---clyde = createEnemy("Clyde", 13, 16)
 
---function init(MAZE_in, MAZE_HEIGHT_in, MAZE_WIDTH_in)
---function init(MAZE_in)
 function init()
-	--MAZE_WIDTH = MAZE_WIDTH_in
-	--MAZE_HEIGHT = MAZE_HEIGHT_in
 	MAZE = formatMaze(MAZE)
 end
 
--- format single array of map to map matrix
+-- format single array of map to twodimensional matrix of map
 function formatMaze(MAZE_in)
 	local temp = {}
 	for y=1, MAZE_HEIGHT, 1 do
@@ -41,6 +35,8 @@ function formatMaze(MAZE_in)
 end
 
 -- test function.
+-- used to see wether it creates the correct data
+-- stores a debug.txt in binary folder.
 function test()
 	local file = io.open("debug.txt", "w")
 	io.output(file)
@@ -81,7 +77,6 @@ function test()
 	-- return "this is from the lua test function"
 	return maze[11]
 end
-
 
 -- enemy is the enemy type. 0 = Blinky; 2 = Inky; 4 = Pinky; 6 = Clyde
 -- up, down, left, right are tiles to the given direction from enemy

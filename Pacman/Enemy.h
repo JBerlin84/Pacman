@@ -13,8 +13,7 @@ public:
 	}
 
 	void update() {
-		// Change direction of player at the correct position.
-
+		// If lerpAmmount is 0 the character is directly over a tile and new calculations can be done.
 		if(lerpAmmount == 0) {
 			// Lua
 			lua_getglobal(luaState, "ai");

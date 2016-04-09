@@ -146,9 +146,6 @@ void warpPlayer() {
 
 void startHuntingTime() {
 	player.startHuntingTime();
-	//std::stringstream ss;
-	//ss << "player is hunting" << player.isHuntingTime();
-	//engine->message(ss.str());
 	for(int i=0;i<4;i++) {
 		enemies[i]->startHuntingTime();
 	}
@@ -262,6 +259,7 @@ void drawEnemies() {
 }
 
 // The mother of all if statements!!!!
+// Fetch the correct sprite from the spritesheet
 int fetchMazeTileType(int x, int y) {
 	bool up, down, left, right;					// straight
 	up = down = left = right = false;
@@ -371,7 +369,7 @@ int fetchMazeTileType(int x, int y) {
 		return TILE_MIDDLE_MIDDLE_FILLED;
 }
 
-// Calculates which tile to be drawn.
+// Get which tile to be drawn.
 int getMazeTile(int x, int y) {
 	int tileType = maze[y][x];
 
