@@ -1,13 +1,30 @@
--- collection of variables, just to get an overview.
--- MAZE_WIDTH : number of columns in the original maze
--- MAZE_HEIGHT : number of rows in the original maze
+--[[
+collection of variables, just to get an overview.
+
+MAZE : holds the complete maze in a single array, this is changed in function init to be a two dimensional matrix.
+MAZE_WIDTH : number of columns in the original maze
+MAZE_HEIGHT : number of rows in the original maze
+blinky : holds the state for blinky
+inky : holds the state for inky
+pinky : holds the state for pinky
+clyde : holds the state for clyde
+]]--
+
+require"data"
 MAZE = {}
+-- 0 = Blinky; 2 = Inky; 4 = Pinky; 6 = Clyde
+--blinky = createEnemy("Blinky", 14, 12)
+--blinky = createEnemy{"Blinky", 14, 12}
+--inky = createEnemy("Inky", 14,14)
+--pinky = createEnemy("Pinky", 14, 16)
+--clyde = createEnemy("Clyde", 13, 16)
 
 --function init(MAZE_in, MAZE_HEIGHT_in, MAZE_WIDTH_in)
-function init(MAZE_in)
+--function init(MAZE_in)
+function init()
 	--MAZE_WIDTH = MAZE_WIDTH_in
 	--MAZE_HEIGHT = MAZE_HEIGHT_in
-	MAZE = formatMaze(MAZE_in)
+	MAZE = formatMaze(MAZE)
 end
 
 -- format single array of map to map matrix
@@ -44,6 +61,13 @@ function test()
 	io.write(#MAZE)
 	io.write("\n")
 
+	io.write("\nBlinky: " .. blinky.name .. " - " .. blinky.x .. ":" .. blinky.y)
+	io.write("\ninky: " .. inky.name .. " - " .. inky.x .. ":" .. inky.y)
+	io.write("\nClyde: " .. clyde.name .. " - " .. clyde.x .. ":" .. clyde.y)
+	io.write("\nPinky: " .. pinky.name .. " - " .. pinky.x .. ":" .. pinky.y)
+
+	io.write("\n\n\n")
+
 	-- print out the matrix so we see its correct
 	for y=1, MAZE_HEIGHT, 1 do
 		for x=1, MAZE_WIDTH, 1 do
@@ -63,21 +87,21 @@ end
 -- up, down, left, right are tiles to the given direction from enemy
 function ai(enemy, up, down, left, right)
 	if(enemy == 0) then
-		return blinky(up, down, left, right)
+		return blinky_ai(up, down, left, right)
 	elseif(enemy == 2) then
-		return inky(up, down, left, right)
+		return inky_ai(up, down, left, right)
 	elseif(enemy == 4) then
-		return pinky(up, down, left, right)
+		return pinky_ai(up, down, left, right)
 	else
-		return clyde(up, down, left, right)
+		return clyde_ai(up, down, left, right)
 	end
 end
 
-function blinky(up, down, left, right)
-	return inky(up, down, left, right)
+function blinky_ai(up, down, left, right)
+	return inky_ai(up, down, left, right)
 end
 
-function inky(up, down, left, right)
+function inky_ai(up, down, left, right)
 	newX = 0
 	newY = 0
 
@@ -101,12 +125,12 @@ function inky(up, down, left, right)
 	return newX, newY
 end
 
-function pinky(up, down, left, right)
-	return inky(up, down, left, right)
+function pinky_ai(up, down, left, right)
+	return inky_ai(up, down, left, right)
 end
 
-function clyde(up, down, left, right)
-	return inky(up, down, left, right)
+function clyde_ai(up, down, left, right)
+	return inky_ai(up, down, left, right)
 end
 
 -- Check if the direction is valid to travel in.

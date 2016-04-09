@@ -44,7 +44,6 @@ bool initializeLuaEnvironment() {
 	lua_pushnumber(luaState, MAZE_WIDTH);
 	lua_setglobal(luaState, "MAZE_WIDTH");
 	
-	lua_getglobal(luaState, "init");
 	// Transfer world matrix to lua as single array
 	// TODO: create a transfer of matrix here?
 	lua_newtable(luaState);
@@ -57,13 +56,22 @@ bool initializeLuaEnvironment() {
 			lua_settable(luaState, -3);
 		}
 	}
-	lua_pcall(luaState, 1, 0, 0);
+	// push maze to variable MAZE
+	lua_setglobal(luaState, "MAZE");
+	
+	// Runs initial function of lua
+	lua_getglobal(luaState, "init");
+	lua_pcall(luaState, 0, 0, 0);
 
-	lua_getglobal(luaState, "test");
-	lua_pcall(luaState, 0, 1, 0);
-	//std::string returnValue(lua_tostring(luaState, -1));
-	double returnValue = lua_tonumber(luaState, -1);
-	lua_pop(luaState, 1);
+
+	if (DEBUG_BUILD) {
+		// DEBUG of lua initial state
+		lua_getglobal(luaState, "test");
+		lua_pcall(luaState, 0, 1, 0);
+		//std::string returnValue(lua_tostring(luaState, -1));
+		double returnValue = lua_tonumber(luaState, -1);
+		lua_pop(luaState, 1);
+	}
 
 	return true;
 }
