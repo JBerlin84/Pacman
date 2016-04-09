@@ -1,9 +1,7 @@
 -- collection of variables, just to get an overview.
-MAZE_WIDTH = 0
-MAZE_HEIGHT = 0
+-- MAZE_WIDTH : number of columns in the original maze
+-- MAZE_HEIGHT : number of rows in the original maze
 MAZE = {}
-
-totalcopies = 0
 
 --function init(MAZE_in, MAZE_HEIGHT_in, MAZE_WIDTH_in)
 function init(MAZE_in)
@@ -20,7 +18,6 @@ function formatMaze(MAZE_in)
 		for x=1, MAZE_WIDTH, 1 do
 			local index = MAZE_WIDTH * (y-1) + (x-1)
 			temp[y][x] = MAZE_in[index]
-			totalcopies = totalcopies + 1
 		end
 	end
 	return temp
@@ -40,13 +37,6 @@ function test()
 	io.write("\nTotal in array: ")
 	io.write(#MAZE)
 	io.write("\n\n\n")
-
-	io.write("\nTotal elements: ")
-	io.write(MAZE_HEIGHT * MAZE_WIDTH)
-	io.write("\nTotal copies: ")
-	io.write(totalcopies)
-	io.write("\n\n\n")
-
 
 	io.write("actual MAZE_WIDTH: ")
 	io.write(#MAZE[1])

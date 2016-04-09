@@ -45,7 +45,8 @@ bool initializeLuaEnvironment() {
 	lua_setglobal(luaState, "MAZE_WIDTH");
 	
 	lua_getglobal(luaState, "init");
-	// Transfer world matrix to lua
+	// Transfer world matrix to lua as single array
+	// TODO: create a transfer of matrix here?
 	lua_newtable(luaState);
 	for (int i = 0; i < MAZE_HEIGHT; i++) {
 		for (int j = 0; j < MAZE_WIDTH; j++) {
