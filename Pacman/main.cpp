@@ -39,6 +39,11 @@ bool game_preload() {
 }
 
 bool initializeLuaEnvironment() {
+	lua_pushnumber(luaState, MAZE_HEIGHT);
+	lua_setglobal(luaState, "MAZE_HEIGHT");
+	lua_pushnumber(luaState, MAZE_WIDTH);
+	lua_setglobal(luaState, "MAZE_WIDTH");
+	
 	lua_getglobal(luaState, "init");
 	// Transfer world matrix to lua
 	lua_newtable(luaState);
@@ -51,9 +56,7 @@ bool initializeLuaEnvironment() {
 			lua_settable(luaState, -3);
 		}
 	}
-	lua_pushnumber(luaState, MAZE_HEIGHT);
-	lua_pushnumber(luaState, MAZE_WIDTH);
-	lua_pcall(luaState, 3, 0, 0);
+	lua_pcall(luaState, 1, 0, 0);
 
 	lua_getglobal(luaState, "test");
 	lua_pcall(luaState, 0, 1, 0);
@@ -189,10 +192,10 @@ void game_update() {
 	for(int i=0;i<4;i++) {
 		enemies[i]->update();
 	}
+	checkEnemyPlayerCollision();
 	player.update();
 	warpPlayer();
 	checkMapEntries();
-	checkEnemyPlayerCollision();
 	checkVictoryCondition();
 	checkGameOver();
 

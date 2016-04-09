@@ -5,9 +5,10 @@ MAZE = {}
 
 totalcopies = 0
 
-function init(MAZE_in, MAZE_HEIGHT_in, MAZE_WIDTH_in)
-	MAZE_WIDTH = MAZE_WIDTH_in
-	MAZE_HEIGHT = MAZE_HEIGHT_in
+--function init(MAZE_in, MAZE_HEIGHT_in, MAZE_WIDTH_in)
+function init(MAZE_in)
+	--MAZE_WIDTH = MAZE_WIDTH_in
+	--MAZE_HEIGHT = MAZE_HEIGHT_in
 	MAZE = formatMaze(MAZE_in)
 end
 
