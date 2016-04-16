@@ -43,6 +43,14 @@ bool initializeLuaEnvironment() {
 	lua_setglobal(luaState, "MAZE_HEIGHT");
 	lua_pushnumber(luaState, MAZE_WIDTH);
 	lua_setglobal(luaState, "MAZE_WIDTH");
+	// These are used to time the update function to the pace of the code.
+	// lerpAmmount < TILE_WIDTH
+	// lerpAmmount = lerpAmmount + PLAYER_SPEED
+	lua_pushnumber(luaState, PLAYER_SPEED);
+	lua_setglobal(luaState, "UPDATE_TIMER_TICK");
+	lua_pushnumber(luaState, TILE_WIDTH);
+	lua_setglobal(luaState, "UPDATE_TIME_INTERVAL");
+
 	
 	// Transfer world matrix to lua as single array
 	// TODO: create a transfer of matrix here?
@@ -195,10 +203,30 @@ void checkEnemyPlayerCollision() {
 	}
 }
 
+void updateLuaState() {
+	// Update the player state in lua.
+	lua_getglobal(luaState, "updatePlayerState");
+	lua_pushnumber(luaState, player.x);
+	lua_pushnumber(luaState, player.y);
+	lua_pushnumber(luaState, player.getMovingDirection());
+	lua_pcall(luaState, 3, 1, 0);
+	bool succeeded = lua_toboolean(luaState, -1);
+	lua_pop(luaState, -1);
+
+	
+	if (!succeeded) {
+		engine->message("update lua state failed.");
+	}
+}
+
 void game_update() {
+	// Update the lua state
+	updateLuaState();
+	// Fetch enemy ai
 	for(int i=0;i<4;i++) {
 		enemies[i]->update();
 	}
+
 	checkEnemyPlayerCollision();
 	player.update();
 	warpPlayer();

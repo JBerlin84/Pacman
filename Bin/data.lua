@@ -1,3 +1,12 @@
+-- direction: 0=none, 1=up, 2=down, 3=left, 4=right
+DIRECTION_UP = 1
+DIRECTION_DOWN = 2
+DIRECTION_LEFT = 3
+DIRECTION_RIGHT = 4
+
+-- player data
+player = {x=0, y=0, direction=0}
+
 -- emenies
 blinky = {name="Blinky", x=14, y=12}
 inky = {name="Inky", x=14, y=14}

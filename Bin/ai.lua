@@ -16,6 +16,12 @@ ENEMY_TYPE_BLINKY : Check wether it is enemy type blinky
 ENEMY_TYPE_INKY : Check wether it is enemy type inky
 ENEMY_TYPE_PINKY : Check wether it is enemy type pinky
 ENEMY_TYPE_CLYDE : Check wether it is enemy type clyde
+
+Moving directions that can be used with moving direction from the code.
+DIRECTION_UP
+DIRECTION_DOWN
+DIRECTION_LEFT
+DIRECTION_RIGHT
 ]]--
 
 require"data"
@@ -84,27 +90,47 @@ function test()
 	return maze[11]
 end
 
+-- update lua state
+function updatePlayerState(x, y, direction)
+	player.x = x
+	player.y = y
+	player.direction = direction
+
+	return true;
+end
+
 -- A* function
+function aStar()
+
+end
 
 -- enemy is the enemy type. 0 = Blinky; 2 = Inky; 4 = Pinky; 6 = Clyde
 -- up, down, left, right are tiles to the given direction from enemy
-function ai(enemy, up, down, left, right)
+function ai(enemy, x, y)
 	if(enemy == 0) then
-		return blinky_ai(up, down, left, right)
+		blinky.x = x;
+		blinky.y = y;
+		return blinky_ai()
 	elseif(enemy == 2) then
-		return inky_ai(up, down, left, right)
+		inky.x = x;
+		inky.y = y;
+		return inky_ai()
 	elseif(enemy == 4) then
-		return pinky_ai(up, down, left, right)
+		pinky.x = x;
+		pinky.y = y;
+		return pinky_ai()
 	else
-		return clyde_ai(up, down, left, right)
+		clyde.x = x;
+		clyde.y = y;
+		return clyde_ai()
 	end
 end
 
-function blinky_ai(up, down, left, right)
-	return inky_ai(up, down, left, right)
+function blinky_ai()
+	return 0, 0
 end
 
-function inky_ai(up, down, left, right)
+function inky_ai()
 	newX = 0
 	newY = 0
 
@@ -128,12 +154,12 @@ function inky_ai(up, down, left, right)
 	return newX, newY
 end
 
-function pinky_ai(up, down, left, right)
-	return inky_ai(up, down, left, right)
+function pinky_ai()
+	return 0, 0
 end
 
-function clyde_ai(up, down, left, right)
-	return inky_ai(up, down, left, right)
+function clyde_ai()
+	return 0, 0
 end
 
 -- Check if the direction is valid to travel in.

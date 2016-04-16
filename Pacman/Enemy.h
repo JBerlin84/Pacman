@@ -18,11 +18,9 @@ public:
 			// Lua
 			lua_getglobal(luaState, "ai");
 			lua_pushnumber(luaState, enemyType);
-			lua_pushnumber(luaState, maze[y-1][x]);
-			lua_pushnumber(luaState, maze[y+1][x]);
-			lua_pushnumber(luaState, maze[y][x-1]);
-			lua_pushnumber(luaState, maze[y][x+1]);
-			lua_pcall(luaState, 5, 2, 0);	// Tar fem argument, returnerar två, ingen felhantering
+			lua_pushnumber(luaState, x);
+			lua_pushnumber(luaState, y);
+			lua_pcall(luaState, 3, 2, 0);	// Tar tre argument, returnerar två, ingen felhantering
 			double newx = lua_tonumber(luaState, -2);
 			double newy = lua_tonumber(luaState, -1);
 			lua_pop(luaState, 2);
