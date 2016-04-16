@@ -52,7 +52,8 @@ bool initializeLuaEnvironment() {
 			//int index = MAZE_HEIGHT*j + i;
 			int index = j + MAZE_WIDTH*i;
 			lua_pushnumber(luaState, index);
-			lua_pushnumber(luaState, maze[i][j]);
+			int value = maze[i][j] == 1 ? 1 : 0;
+			lua_pushnumber(luaState, value);
 			lua_settable(luaState, -3);
 		}
 	}
@@ -63,7 +64,7 @@ bool initializeLuaEnvironment() {
 	lua_getglobal(luaState, "init");
 	lua_pcall(luaState, 0, 0, 0);
 
-
+	
 	if (DEBUG_BUILD) {
 		// DEBUG of lua initial state
 		lua_getglobal(luaState, "test");

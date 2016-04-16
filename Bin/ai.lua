@@ -4,6 +4,10 @@ collection of variables, just to get an overview.
 MAZE : holds the complete maze in a single array, this is changed in function init to be a two dimensional matrix.
 MAZE_WIDTH : number of columns in the original maze
 MAZE_HEIGHT : number of rows in the original maze
+
+CURRENT_STATE : the current state of enemies/game
+NEW_STATE : the new state of the enemies/game
+
 blinky : holds the state for blinky
 inky : holds the state for inky
 pinky : holds the state for pinky
@@ -17,6 +21,8 @@ ENEMY_TYPE_CLYDE : Check wether it is enemy type clyde
 require"data"
 MAZE = {}
 
+-- Call this function in the beginning of the program to initialize the
+-- LUA environment.
 function init()
 	MAZE = formatMaze(MAZE)
 end
@@ -77,6 +83,8 @@ function test()
 	-- return "this is from the lua test function"
 	return maze[11]
 end
+
+-- A* function
 
 -- enemy is the enemy type. 0 = Blinky; 2 = Inky; 4 = Pinky; 6 = Clyde
 -- up, down, left, right are tiles to the given direction from enemy

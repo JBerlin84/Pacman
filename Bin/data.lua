@@ -9,3 +9,10 @@ ENEMY_TYPE_BLINKY = 0
 ENEMY_TYPE_INKY = 2
 ENEMY_TYPE_PINKY = 4
 ENEMY_TYPE_CLYDE = 6
+
+-- wander coordinates
+-- this will probably not work as maze_width and maze_height are not defined.
+BLINKY_SCATTER_TARGET = {x=1, y=1}
+PINKY_SCATTER_TARGET = {x=MAZE_WIDTH, y=1}
+INKY_SCATTER_TARGET = {x=1, y=MAZE_HEIGHT}
+CLYDE_SCATTER_TARGET = {x=MAZE_WIDTH, y=MAZE_HEIGHT}
