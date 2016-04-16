@@ -105,7 +105,6 @@ function aStar()
 end
 
 -- enemy is the enemy type. 0 = Blinky; 2 = Inky; 4 = Pinky; 6 = Clyde
--- up, down, left, right are tiles to the given direction from enemy
 function ai(enemy, x, y)
 	if(enemy == 0) then
 		blinky.x = x;
@@ -131,27 +130,11 @@ function blinky_ai()
 end
 
 function inky_ai()
-	newX = 0
-	newY = 0
-
 	repeat
 		randomDirection = math.random(4)
-		if(randomDirection == 1) then
-			newX = -1
-			newY = 0
-		elseif(randomDirection == 2) then
-			newX = 1
-			newY = 0
-		elseif(randomDirection == 3) then
-			newX = 0
-			newY = -1
-		else
-			newX = 0
-			newY = 1
-		end
-	until validDirection(newX, newY, up, down, left, right)
+	until validDirection(randomDirection, inky.x, inky.y)
 
-	return newX, newY
+	return math.floor(randomDirection)
 end
 
 function pinky_ai()
@@ -163,14 +146,19 @@ function clyde_ai()
 end
 
 -- Check if the direction is valid to travel in.
-function validDirection(x, y, up, down, left, right)
-	if(x<0 and left~=1) then
+function validDirection(direction, x, y)
+	left = MAZE[x-1][y]
+	right = MAZE[x+1][y]
+	up = MAZE[x][y-1]
+	down = MAZE[x][y+1]
+
+	if(direction == DIRECTION_LEFT and left~=1) then
 		return true
-	elseif(x>0 and right~=1) then
+	elseif(direction == DIRECTION_RIGHT and right~=1) then
 		return true
-	elseif(y<0 and up~=1) then
+	elseif(direction == DIRECTION_UP and up~=1) then
 		return true
-	elseif(y>0 and down~=1) then
+	elseif(direction == DIRECTION_DOWN and down~=1) then
 		return true
 	else
 		return false

@@ -17,19 +17,31 @@ public:
 		if(lerpAmmount == 0) {
 			// Lua
 			lua_getglobal(luaState, "ai");
-			lua_pushnumber(luaState, enemyType);
-			lua_pushnumber(luaState, x);
-			lua_pushnumber(luaState, y);
-			lua_pcall(luaState, 3, 2, 0);	// Tar tre argument, returnerar två, ingen felhantering
-			double newx = lua_tonumber(luaState, -2);
-			double newy = lua_tonumber(luaState, -1);
-			lua_pop(luaState, 2);
+			lua_pushnumber(luaState, enemyType);	// which enemy are we?
+			lua_pushnumber(luaState, x);			// which x-coord do we have?
+			lua_pushnumber(luaState, y);			// which y-coord do we have?
+			lua_pcall(luaState, 3, 1, 0);			// Tar tre argument, returnerar två, ingen felhantering
+			Direction newDirection = (Direction)(int)lua_tonumber(luaState, -1);		// for some reason lua_tointeger wont work, even if i send integer.
+			lua_pop(luaState, 1);
 
+			/*
 			std::stringstream ss;			
-			ss << "new x: " << newx;
-			ss << "\nnew y: " << newy;
+			if (newDirection == Direction_up)
+				ss << "up";
+			else if(newDirection == Direction_down)
+				ss << "down";
+			else if(newDirection == Direction_left)
+				ss << "left";
+			else if (newDirection == Direction_right)
+				ss << "right";
+			else
+				ss << "Something went terribly wrong: newDirection = " << newDirection << " inewDirection: " << newDirection;
+				*/
+
+			//ss << "\nnew y: " << newy;
 			//engine->message(ss.str());
 
+			/*
 			if(newy==-1.0)
 				movingDirection = Direction_up;
 			else if(newy==1.0)
@@ -38,6 +50,8 @@ public:
 				movingDirection = Direction_left;
 			else if(newx==1.0)
 				movingDirection = Direction_right;
+				*/
+			movingDirection = newDirection;
 		}
 
 		lerpAmmount = lerpSpeed + lerpAmmount;
