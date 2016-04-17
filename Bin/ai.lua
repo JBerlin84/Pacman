@@ -12,6 +12,7 @@ blinky : holds the state for blinky
 inky : holds the state for inky
 pinky : holds the state for pinky
 clyde : holds the state for clyde
+
 ENEMY_TYPE_BLINKY : Check wether it is enemy type blinky
 ENEMY_TYPE_INKY : Check wether it is enemy type inky
 ENEMY_TYPE_PINKY : Check wether it is enemy type pinky
@@ -99,22 +100,121 @@ function updatePlayerState(x, y, direction)
 	return true;
 end
 
--- A* function
-function aStar()
-
+-- A* function and other helper functions
+--[[
+function distance_between(start, goal)
+	return math.sqrt(math.pow(goal.x-start.y,2) + math.pow(goal.y-start.y, 2))
 end
+
+function lowest_f_score(set, f_score)
+	lowest, best = 1/0, nil
+	for i, node in ipairs(set) do
+		local score = f_score[node]
+		if score < lowest then
+			lowest, bestNode = score, node
+		end
+	end
+	return bestNode
+end
+
+function remove_node(set, node)
+	for i, n in ipairs(set) do
+		if n == node then
+			set[i] = set[#set]
+			set[#set] = nil
+			break
+		end
+	end
+end
+
+function in_set(set, node)
+	for i, n in ipairs(set) do
+		if n == node then
+			return true
+		end
+	end
+end
+
+function unwind(path, map, currentNode)
+	if map[currentNode] then
+		table.insert(path, 1, map[currentNode])
+		return unwind(path, map, map[currentNode])
+	else
+		return path
+	end
+end
+
+function neighbors(current)
+	local neighbors = {}
+	if(MAZE[current.x-1][current.y] == 0) then
+		local n = {x=current.x-1, y=current.y}
+		neighbors.insert(n)
+	end
+	if(MAZE[current.x+1][current.y] == 0) then
+		local n = {x=current.x+1, y=current.y}
+		neighbors.insert(n)
+	end
+	if(MAZE[current.x][current.y-1] == 0) then
+		local n = {x=current.x, y=current.y-1}
+		neighbors.insert(n)
+	end
+	if(MAZE[current.x][current.y+1] == 0) then
+		local n = {x=current.x, y=current.y+1}
+		neighbors.insert(n)
+	end
+
+	return neighbors
+end
+
+function aStar(start, goal)
+	local closedSet = {}
+	local openSet = {start}
+	local cameFrom = {}
+
+	local g_score = {}
+	local f_score = {}
+	g_score[start] = 0
+	f_score[start] = 0 + distance_between(start, goal)
+
+	while #openSet > 0 do
+		local current = lowest_f_score(openSet, f_score)
+		if curren == goal then
+			local path = unwind({}, cameFrom, goal)
+			return path
+		end
+
+		remove_node(openset, current)
+		closedSet.insert(current)	-- table.insert(closedSet, current)
+
+		local neighbors = neighbors(current)
+		for i, neighbor in ipairs(neighbors) do
+			if not in_set(closedSet, neighbor) then
+				local tentative_g_score = g_score[current] + distance_between(current, neighbor)
+
+				if not in_set(openSet, neighbor) or tentative_g_score < g_score[neighbor] then
+					came_from[neighbor] = current
+					g_score[neighbor] = tentative_g_score
+					f_score[neighbor] = g_score[neighbor] + distance_between(neighbor, goal)
+					if not in_set(openSet, neighbor) then
+						openSet.insert(neighbor)
+					end
+				end
+			end
+		end
+	end
+end]]
 
 -- enemy is the enemy type. 0 = Blinky; 2 = Inky; 4 = Pinky; 6 = Clyde
 function ai(enemy, x, y)
-	if(enemy == 0) then
+	if(enemy == ENEMY_TYPE_BLINKY) then
 		blinky.x = x;
 		blinky.y = y;
 		return blinky_ai()
-	elseif(enemy == 2) then
+	elseif(enemy == ENEMY_TYPE_INKY) then
 		inky.x = x;
 		inky.y = y;
 		return inky_ai()
-	elseif(enemy == 4) then
+	elseif(enemy == ENEMY_TYPE_PINKY) then
 		pinky.x = x;
 		pinky.y = y;
 		return pinky_ai()
@@ -133,6 +233,8 @@ function inky_ai()
 	repeat
 		randomDirection = math.random(4)
 	until validDirection(randomDirection, inky.x, inky.y)
+
+	aStar(inky, player)
 
 	return math.floor(randomDirection)
 end

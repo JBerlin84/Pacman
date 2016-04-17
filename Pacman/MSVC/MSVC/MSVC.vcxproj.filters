@@ -34,5 +34,8 @@
     <None Include="..\..\..\Bin\ai.lua">
       <Filter>Source Files</Filter>
     </None>
+    <None Include="..\..\..\Bin\data.lua">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

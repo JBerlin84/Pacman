@@ -24,33 +24,6 @@ public:
 			Direction newDirection = (Direction)(int)lua_tonumber(luaState, -1);		// for some reason lua_tointeger wont work, even if i send integer.
 			lua_pop(luaState, 1);
 
-			/*
-			std::stringstream ss;			
-			if (newDirection == Direction_up)
-				ss << "up";
-			else if(newDirection == Direction_down)
-				ss << "down";
-			else if(newDirection == Direction_left)
-				ss << "left";
-			else if (newDirection == Direction_right)
-				ss << "right";
-			else
-				ss << "Something went terribly wrong: newDirection = " << newDirection << " inewDirection: " << newDirection;
-				*/
-
-			//ss << "\nnew y: " << newy;
-			//engine->message(ss.str());
-
-			/*
-			if(newy==-1.0)
-				movingDirection = Direction_up;
-			else if(newy==1.0)
-				movingDirection = Direction_down;
-			else if(newx==-1.0)
-				movingDirection = Direction_left;
-			else if(newx==1.0)
-				movingDirection = Direction_right;
-				*/
 			movingDirection = newDirection;
 		}
 
@@ -71,6 +44,7 @@ public:
 		else if (movingDirection == Direction_right && maze[y][x+1] != Tile_wall) {
 			++xDir;
 		}
+		// Special case for warp.
 		else if (movingDirection == Direction_left && x == 0) {
 			--xDir;
 		}
@@ -78,6 +52,7 @@ public:
 			++xDir;
 		}
 
+		// Lerp between tiles.
 		ix = lerp(1, 1 + xDir, lerpAmmount) - 1;
 		iy = lerp(1, 1 + yDir, lerpAmmount) - 1;
 
