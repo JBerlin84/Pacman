@@ -101,7 +101,6 @@ function updatePlayerState(x, y, direction)
 end
 
 -- A* function and other helper functions
---[[
 function distance_between(start, goal)
 	return math.sqrt(math.pow(goal.x-start.y,2) + math.pow(goal.y-start.y, 2))
 end
@@ -167,6 +166,12 @@ function neighbors(current)
 end
 
 function aStar(start, goal)
+	local file = io.open("aStar.txt", "w")
+	io.output(file)
+
+	io.write("inside aStar")
+	io.close(file)
+
 	local closedSet = {}
 	local openSet = {start}
 	local cameFrom = {}
@@ -178,7 +183,7 @@ function aStar(start, goal)
 
 	while #openSet > 0 do
 		local current = lowest_f_score(openSet, f_score)
-		if curren == goal then
+		if current == goal then
 			local path = unwind({}, cameFrom, goal)
 			return path
 		end
@@ -202,7 +207,34 @@ function aStar(start, goal)
 			end
 		end
 	end
-end]]
+
+
+end
+
+
+--[[
+function lowest_f_score(set, f_score)
+	lowest, best = 1/0, nil
+	for i, node in ipairs(set) do
+		local score = f_score[node]
+		if score < lowest then
+			lowest, bestNode = score, node
+		end
+	end
+	return bestNode
+end
+
+function aStar(from, to)
+	--local closedSet = {}
+	local openSet = {from}
+	local cameFrom = {}
+	local fScore = {}
+
+	while #openSet > 0 do
+		local current = lowest_f_score(openSet, fScore)
+	end
+end
+]]
 
 -- enemy is the enemy type. 0 = Blinky; 2 = Inky; 4 = Pinky; 6 = Clyde
 function ai(enemy, x, y)
