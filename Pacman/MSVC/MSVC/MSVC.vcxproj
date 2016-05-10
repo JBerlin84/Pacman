@@ -96,6 +96,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\Bin\ai.lua" />
+    <None Include="..\..\..\Bin\a_star.lua" />
     <None Include="..\..\..\Bin\data.lua" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

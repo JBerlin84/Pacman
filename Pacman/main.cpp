@@ -39,18 +39,33 @@ bool game_preload() {
 }
 
 bool initializeLuaEnvironment() {
+	// Push world values
 	lua_pushnumber(luaState, MAZE_HEIGHT);
 	lua_setglobal(luaState, "MAZE_HEIGHT");
 	lua_pushnumber(luaState, MAZE_WIDTH);
 	lua_setglobal(luaState, "MAZE_WIDTH");
-	// These are used to time the update function to the pace of the code.
-	// lerpAmmount < TILE_WIDTH
-	// lerpAmmount = lerpAmmount + PLAYER_SPEED
-	lua_pushnumber(luaState, PLAYER_SPEED);
-	lua_setglobal(luaState, "UPDATE_TIMER_TICK");
-	lua_pushnumber(luaState, TILE_WIDTH);
-	lua_setglobal(luaState, "UPDATE_TIME_INTERVAL");
+	
+	// Push directions
+	lua_pushnumber(luaState, Direction_none);
+	lua_setglobal(luaState, "DIRECTION_NONE");
+	lua_pushnumber(luaState, Direction_up);
+	lua_setglobal(luaState, "DIRECTION_UP");
+	lua_pushnumber(luaState, Direction_down);
+	lua_setglobal(luaState, "DIRECTION_DOWN");
+	lua_pushnumber(luaState, Direction_left);
+	lua_setglobal(luaState, "DIRECTION_LEFT");
+	lua_pushnumber(luaState, Direction_right);
+	lua_setglobal(luaState, "DIRECTION_RIGHT");
 
+	// Push enemy types
+	lua_pushnumber(luaState, ENEMY_BLINKY);
+	lua_setglobal(luaState, "ENEMY_TYPE_BLINKY");
+	lua_pushnumber(luaState, ENEMY_INKY);
+	lua_setglobal(luaState, "ENEMY_TYPE_INKY");
+	lua_pushnumber(luaState, ENEMY_PINKY);
+	lua_setglobal(luaState, "ENEMY_TYPE_PINKY");
+	lua_pushnumber(luaState, ENEMY_CLYDE);
+	lua_setglobal(luaState, "ENEMY_TYPE_CLYDE");
 	
 	// Transfer world matrix to lua as single array
 	// TODO: create a transfer of matrix here?
@@ -71,16 +86,6 @@ bool initializeLuaEnvironment() {
 	// Runs initial function of lua
 	lua_getglobal(luaState, "init");
 	lua_pcall(luaState, 0, 0, 0);
-
-	
-	if (DEBUG_BUILD) {
-		// DEBUG of lua initial state
-		lua_getglobal(luaState, "test");
-		lua_pcall(luaState, 0, 1, 0);
-		//std::string returnValue(lua_tostring(luaState, -1));
-		double returnValue = lua_tonumber(luaState, -1);
-		lua_pop(luaState, 1);
-	}
 
 	return true;
 }

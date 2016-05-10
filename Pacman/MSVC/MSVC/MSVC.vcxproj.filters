@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\LUA">
+      <UniqueIdentifier>{af8af436-e296-4ddb-91a0-285b45bcfc62}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\main.cpp">
@@ -31,11 +34,14 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\..\Bin\a_star.lua">
+      <Filter>Source Files\LUA</Filter>
+    </None>
     <None Include="..\..\..\Bin\ai.lua">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\LUA</Filter>
     </None>
     <None Include="..\..\..\Bin\data.lua">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\LUA</Filter>
     </None>
   </ItemGroup>
 </Project>

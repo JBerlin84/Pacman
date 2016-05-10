@@ -16,12 +16,13 @@ public:
 		// If lerpAmmount is 0 the character is directly over a tile and new calculations can be done.
 		if(lerpAmmount == 0) {
 			// Lua
-			lua_getglobal(luaState, "ai");
+			lua_getglobal(luaState, "getNextMoveById");
 			lua_pushnumber(luaState, enemyType);	// which enemy are we?
 			lua_pushnumber(luaState, x);			// which x-coord do we have?
 			lua_pushnumber(luaState, y);			// which y-coord do we have?
 			lua_pcall(luaState, 3, 1, 0);			// Tar tre argument, returnerar två, ingen felhantering
-			Direction newDirection = (Direction)(int)lua_tonumber(luaState, -1);		// for some reason lua_tointeger wont work, even if i send integer.
+			Direction newDirection = (Direction)(int)lua_tonumber(luaState, -1);		// for some reason lua_tointeger won't work, even if i send integer.
+			//engine->message("new direction: " + newDirection);
 			lua_pop(luaState, 1);
 
 			movingDirection = newDirection;
