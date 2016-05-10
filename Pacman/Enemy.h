@@ -22,7 +22,6 @@ public:
 			lua_pushnumber(luaState, y);			// which y-coord do we have?
 			lua_pcall(luaState, 3, 1, 0);			// Tar tre argument, returnerar två, ingen felhantering
 			Direction newDirection = (Direction)(int)lua_tonumber(luaState, -1);		// for some reason lua_tointeger won't work, even if i send integer.
-			//engine->message("new direction: " + newDirection);
 			lua_pop(luaState, 1);
 
 			movingDirection = newDirection;
@@ -33,16 +32,16 @@ public:
 		int xDir = 0;
 		int yDir = 0;
 		
-		if (movingDirection == Direction_up && maze[y-1][x] != Tile_wall) {
+		if (movingDirection == Direction_up) {// && maze[y-1][x] != Tile_wall) {
 			--yDir;
 		}
-		else if (movingDirection == Direction_down && maze[y+1][x] != Tile_wall) {
+		else if (movingDirection == Direction_down) {// && maze[y+1][x] != Tile_wall) {
 			++yDir;
 		}
-		else if (movingDirection == Direction_left && maze[y][x-1] != Tile_wall) {
+		else if (movingDirection == Direction_left) {// && maze[y][x-1] != Tile_wall) {
 			--xDir;
 		}
-		else if (movingDirection == Direction_right && maze[y][x+1] != Tile_wall) {
+		else if (movingDirection == Direction_right) { // && maze[y][x+1] != Tile_wall) {
 			++xDir;
 		}
 		// Special case for warp.

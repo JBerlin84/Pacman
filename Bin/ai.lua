@@ -62,8 +62,8 @@ end]]
 
 -- update player in lua state
 function updatePlayerState(x, y, direction)
-	player.x = x
-	player.y = y
+	player.x = x + 1	-- index in lua start with 1, in c 0
+	player.y = y + 1	-- index in lua start with 1, in c 0
 	player.direction = direction
 
 	return true;
@@ -73,8 +73,8 @@ end
 -- distribute call to correct ai-function
 function getNextMoveById(enemy, x, y)
 	if(enemy == ENEMY_TYPE_BLINKY) then
-		blinky.x = x
-		blinky.y = y
+		blinky.x = x + 1	-- index in lua start with 1, in c 0
+		blinky.y = y + 1	-- index in lua start with 1, in c 0
 		return blinky_ai()
 	elseif(enemy == ENEMY_TYPE_INKY) then
 		inky.x = x
