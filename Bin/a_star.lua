@@ -31,16 +31,6 @@ function getNextTile(position, target, direction)
   -- get the next tile
   local path = aStar(position, target, allNodes)
 
-  local file = io.open("debug.txt", "a")
-  io.output(file)
-  for _, n in ipairs(path) do
-    io.write("(" .. n.x .. ":" .. n.y .. ")\n")
-  end
-  io.write("\n\n\n\n\n\n\n")
-  io.close(file)
-
-
-
   return path[2]  -- the second tile is the next one to step on.
 end
 

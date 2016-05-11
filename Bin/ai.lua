@@ -26,14 +26,28 @@ DIRECTION_LEFT
 DIRECTION_RIGHT
 ]]
 
-require"data"
+require "data"
 require "a_star"
+require "timer"
 MAZE = {}
 
 -- Call this function in the beginning of the program to initialize the
 -- LUA environment.
 function init()
 	MAZE = formatMaze(MAZE)
+	gameState = GAME_STATE_SCATTER
+
+	-- wander coordinates
+	--BLINKY_SCATTER_TARGET = {x=2, y=2}
+	--PINKY_SCATTER_TARGET = {x=MAZE_WIDTH-1, y=2}
+	--INKY_SCATTER_TARGET = {x=2, y=MAZE_HEIGHT-1}
+	--CLYDE_SCATTER_TARGET = {x=MAZE_WIDTH-1, y=MAZE_HEIGHT-1}
+	blinky.scatter = {x=2, y=2}
+	pinky.scatter = {x=MAZE_WIDTH-1, y=2}
+	inky.scatter = {x=2, y=MAZE_HEIGHT-1}
+	clyde.scatter = {x=MAZE_WIDTH-1, y=MAZE_HEIGHT-1}
+
+	restartTimer()
 end
 
 -- format single array of map to twodimensional matrix of map
@@ -49,7 +63,7 @@ function formatMaze(MAZE_in)
 	return temp
 end
 
---[[
+
 -- test function.
 -- used to see wether it creates the correct data
 -- stores a debug.txt in binary folder.
@@ -58,7 +72,23 @@ function printToFile(message)
 	io.output(file)
 	io.write(message)
 	io.close(file)
-end]]
+end
+
+function updateLuaState()
+	if stopWatch(gameStateIntervals.intervals[gameStateIntervals.i]) then
+		printToFile("inside stopwatch\n")
+		printToFile("current gameState: " .. gameState .. "\n")
+		restartTimer()
+		gameStateIntervals.i = gameStateIntervals.i+1
+		if (gameState - GAME_STATE_CHASE) == 0 then
+			printToFile("....change to scatter\n")
+			gameState = GAME_STATE_SCATTER
+		elseif (gameState - GAME_STATE_SCATTER) == 0 then
+			printToFile("....change to chase\n")
+			gameState = GAME_STATE_CHASE
+		end
+	end
+end
 
 -- update player in lua state
 function updatePlayerState(x, y, direction)
@@ -75,7 +105,11 @@ function getNextMoveById(enemy, x, y)
 	if(enemy == ENEMY_TYPE_BLINKY) then
 		blinky.x = x + 1	-- index in lua start with 1, in c 0
 		blinky.y = y + 1	-- index in lua start with 1, in c 0
-		return blinky_ai()
+		if gameState == GAME_STATE_SCATTER then
+			return scatter_ai(blinky)
+		else
+			return blinky_ai()
+		end
 	elseif(enemy == ENEMY_TYPE_INKY) then
 		inky.x = x
 		inky.y = y
@@ -96,9 +130,6 @@ function blinky_ai()
 	-- find new tile
 	local nextTile = getNextTile(blinky, player, blinky.direction)
 	local newDirection = findDirection(blinky, nextTile)
-	-- update char with new coord
-	blinky.x = nextTile.x
-	blinky.y = nextTile.y
 
 	return newDirection
 end
@@ -113,6 +144,13 @@ end
 
 function clyde_ai()
 	return DIRECTION_NONE
+end
+
+-- find the next direction according to scatter function
+function scatter_ai(e)
+	local nextTile = getNextTile(e, e.scatter, e.direction)
+	local newDirection = findDirection(e, nextTile)
+	return newDirection
 end
 
 function findDirection(position, nextTile)

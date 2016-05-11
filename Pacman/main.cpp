@@ -209,6 +209,14 @@ void checkEnemyPlayerCollision() {
 }
 
 void updateLuaState() {
+	// update state
+	lua_getglobal(luaState, "updateLuaState");
+	if (lua_pcall(luaState, 0, 0, 0)) {
+		std::stringstream ss;
+		ss << "Error loading LUA file: " << lua_tostring(luaState, -1);
+		engine->message(ss.str());
+	}
+
 	// Update the player state in lua.
 	lua_getglobal(luaState, "updatePlayerState");
 	lua_pushnumber(luaState, player.x);
