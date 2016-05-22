@@ -1,5 +1,5 @@
---gameStateIntervals = {i = 1, intervals={7, 20, 7, 20, 5, 20, 5, math.maxinteger}}
-gameStateIntervals = {i = 1, intervals={2, 3, 2, 3, 2, 3, 2, math.maxinteger}}
+gameStateIntervals = {i = 1, intervals={7, 20, 7, 20, 5, 20, 5, math.maxinteger}}
+--gameStateIntervals = {i = 1, intervals={2, 3, 2, 3, 2, 3, 2, math.maxinteger}}
 
 -- restart the timer
 function restartTimer()
@@ -18,33 +18,3 @@ function stopWatch(time)
 	end
 	return false
 end
-
-
-------------------------------------------------------------------------
-------------------------------------------------------------------------
---trying yield
---require "socket"
-
-
---[[
--- test function
-function start()
-	local chase = false
-	restartTimer()
-
-	print("Now Scatter")
-	while true do
-		if stopWatch(gameStateIntervals.intervals[gameStateIntervals.i]) then
-			restartTimer()
-			gameStateIntervals.i = gameStateIntervals.i+1
-			if chase then
-				chase = false
-				print("Starting Scatter")
-			else
-				chase = true
-				print("starting Chase")
-			end
-		end
-	end
-end
-]]

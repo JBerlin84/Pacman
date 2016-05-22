@@ -158,6 +158,7 @@ int maze[MAZE_HEIGHT][MAZE_WIDTH] = {            //
 };
 int numberOfFruitsLeft;
 int maxNumberOfFruits;	// used to calculate how many fruits the player has eaten.
+bool huntingTime;
 enum TileTypesEnum { Tile_empty, Tile_wall, Tile_small, Tile_large, Tile_spawn };
 enum Direction { Direction_none, Direction_up, Direction_down, Direction_left, Direction_right };
 

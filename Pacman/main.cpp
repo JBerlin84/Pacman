@@ -200,7 +200,6 @@ void checkGameOver() {
 		engine->Shutdown();
 }
 
-// TODO: no hit when immortal
 void checkEnemyPlayerCollision() {
 	if(!player.isHuntingTime()) {
 		for(int i=0;i<4;i++) {
@@ -217,6 +216,8 @@ void updateLuaState() {
 	// update variables in lua state
 	lua_pushnumber(luaState, maxNumberOfFruits - numberOfFruitsLeft);
 	lua_setglobal(luaState, "consumed_dots");
+	lua_pushboolean(luaState, player.isHuntingTime());
+	lua_setglobal(luaState, "huntingTime");
 
 	// update state
 	lua_getglobal(luaState, "updateLuaState");
@@ -263,7 +264,6 @@ void game_update() {
 }
 
 void game_keyPress(int key) {
-	
 	if (key == DIK_UPARROW) {
 		player.moveUp();
 	}
