@@ -1,7 +1,7 @@
 --[[
 collection of variables, just to get an overview.
 
-MAZE : holds the complete maze in a single array, this is changed in function init to be a two dimensional matrix.
+MAZE : holds the complete maze in a single array, this is changed in function init to be a two dimensional matrix. 1=wall 0=walkable area
 MAZE_WIDTH : number of columns in the original maze
 MAZE_HEIGHT : number of rows in the original maze
 
@@ -25,7 +25,8 @@ DIRECTION_DOWN
 DIRECTION_LEFT
 DIRECTION_RIGHT
 
-consumed_dots : the number of dots pacman has consumed.
+consumedDots : the number of dots pacman has consumed.
+frightened : is it hunting time for ghosts or not?
 ]]
 
 require "data"
@@ -46,6 +47,8 @@ function init()
 	clyde.scatter = {x=MAZE_WIDTH-1, y=MAZE_HEIGHT-1}
 
 	restartTimer()
+
+	math.randomseed(os.time())
 end
 
 -- format single array of map to twodimensional matrix of map
@@ -101,6 +104,8 @@ function getNextMoveById(enemy, x, y)
 		blinky.y = y + 1	-- index in lua start with 1, in c 0
 		if gameState == GAME_STATE_SCATTER then
 			return scatter_ai(blinky)
+		elseif frightened then
+			return frightened_ai(blinky)
 		else
 			return blinky_ai()
 		end
@@ -109,6 +114,8 @@ function getNextMoveById(enemy, x, y)
 		pinky.y = y + 1
 		if gameState == GAME_STATE_SCATTER then
 			return scatter_ai(pinky)
+		elseif frightened then
+			return frightened_ai(pinky)
 		else
 			return pinky_ai()
 		end
@@ -117,6 +124,8 @@ function getNextMoveById(enemy, x, y)
 		inky.y = y + 1
 		if gameState == GAME_STATE_SCATTER then
 			return scatter_ai(inky)
+		elseif frightened then
+			return frightened_ai(inky)
 		else
 			return inky_ai()
 		end
@@ -125,6 +134,8 @@ function getNextMoveById(enemy, x, y)
 		clyde.y = y + 1
 		if gameState == GAME_STATE_SCATTER then
 			return scatter_ai(clyde)
+		elseif frightened then
+			return frightened_ai(clyde)
 		else
 			return clyde_ai()
 		end
@@ -170,7 +181,32 @@ end
 function scatter_ai(e)
 	local nextTile = getNextTile(e, e.scatter, e.direction)
 	local newDirection = findDirection(e, nextTile)
+	e.direction = newDirection
+
 	return newDirection
+end
+
+-- find the next direction when you are frightened
+function frightened_ai(e)
+	printToFile("frightened ai\n")
+	local randX = 0
+	local randY = 0
+
+	-- TODO: we have to fix this. make it faster
+	repeat
+		randX = math.random(2,MAZE_WIDTH-1)
+		randY = math.random(2,MAZE_HEIGHT-1)
+	until(validCoord(randX, randY))
+
+	local nextTile = getNextTile(e, {x=randX, y=randY}, e.direction)
+	local newDirection = findDirection(e, nextTile)
+	e.direction = newDirection
+
+	return newDirection
+end
+
+function validCoord(xCoord, yCoord)
+	return MAZE[yCoord][xCoord] == 0
 end
 
 function findDirection(position, nextTile)

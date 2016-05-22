@@ -26,9 +26,6 @@ function getNextTile(position, target, direction)
   elseif direction == DIRECTION_RIGHT then
     nodeToRemove={x=position.x-1, y=  position.y}
   end
-  printToFile("position: (" .. position.x .. ":" .. position.y .. ")\n")
-  printToFile("nodeToRemove: (" .. nodeToRemove.x .. ":" .. nodeToRemove.y .. ")\n")
-  printToFile("direction: " .. direction .. "\n")
   remove_node(allNodes, nodeToRemove)
 
   -- get the next tile
@@ -137,7 +134,6 @@ end
 function remove_node(set, node)
   for q, n in ipairs(set) do
     if equals(n,node) then
-      printToFile("Node \n")
       set[q] = set[#set]
       set[#set] = nil
       break

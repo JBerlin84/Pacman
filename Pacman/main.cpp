@@ -60,6 +60,8 @@ bool initializeLuaEnvironment() {
 	// Push random global variables
 	lua_pushnumber(luaState, 0);
 	lua_setglobal(luaState, "consumed_dots");
+	lua_pushboolean(luaState, player.isHuntingTime());
+	lua_setglobal(luaState, "frightened");
 
 	// Push enemy types
 	lua_pushnumber(luaState, ENEMY_BLINKY);
@@ -139,8 +141,8 @@ bool game_init(HWND) {
 
 	player = Character(START_POSITION_X, START_POSITION_Y, 3);
 
-	enemies[0] = new Enemy(14,14, ENEMY_BLINKY);
-	enemies[1] = new Enemy(13,14, ENEMY_PINKY);
+	enemies[0] = new Enemy(13,11, ENEMY_BLINKY);
+	enemies[1] = new Enemy(14,14, ENEMY_PINKY);
 	enemies[2] = new Enemy(14,15, ENEMY_INKY);
 	enemies[3] = new Enemy(13,15, ENEMY_CLYDE);
 
@@ -215,9 +217,9 @@ void checkEnemyPlayerCollision() {
 void updateLuaState() {
 	// update variables in lua state
 	lua_pushnumber(luaState, maxNumberOfFruits - numberOfFruitsLeft);
-	lua_setglobal(luaState, "consumed_dots");
+	lua_setglobal(luaState, "consumedDots");
 	lua_pushboolean(luaState, player.isHuntingTime());
-	lua_setglobal(luaState, "huntingTime");
+	lua_setglobal(luaState, "frightened");
 
 	// update state
 	lua_getglobal(luaState, "updateLuaState");
@@ -235,7 +237,7 @@ void updateLuaState() {
 	lua_pcall(luaState, 3, 1, 0);
 	bool succeeded = lua_toboolean(luaState, -1);
 	lua_pop(luaState, -1);
-	
+
 	if (!succeeded) {
 		engine->message("update lua state failed.");
 	}
