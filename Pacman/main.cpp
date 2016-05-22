@@ -59,7 +59,7 @@ bool initializeLuaEnvironment() {
 
 	// Push random global variables
 	lua_pushnumber(luaState, 0);
-	lua_setglobal(luaState, "consumed_foods");
+	lua_setglobal(luaState, "consumed_dots");
 
 	// Push enemy types
 	lua_pushnumber(luaState, ENEMY_BLINKY);
@@ -216,7 +216,7 @@ void checkEnemyPlayerCollision() {
 void updateLuaState() {
 	// update variables in lua state
 	lua_pushnumber(luaState, maxNumberOfFruits - numberOfFruitsLeft);
-	lua_setglobal(luaState, "consumed_foods");
+	lua_setglobal(luaState, "consumed_dots");
 
 	// update state
 	lua_getglobal(luaState, "updateLuaState");
@@ -234,7 +234,6 @@ void updateLuaState() {
 	lua_pcall(luaState, 3, 1, 0);
 	bool succeeded = lua_toboolean(luaState, -1);
 	lua_pop(luaState, -1);
-
 	
 	if (!succeeded) {
 		engine->message("update lua state failed.");

@@ -24,6 +24,8 @@ DIRECTION_UP
 DIRECTION_DOWN
 DIRECTION_LEFT
 DIRECTION_RIGHT
+
+consumed_dots : the number of dots pacman has consumed.
 ]]
 
 require "data"
@@ -75,19 +77,15 @@ function printToFile(message)
 end
 
 function updateLuaState()
-	if stopWatch(gameStateIntervals.intervals[gameStateIntervals.i]) then
-		printToFile("inside stopwatch\n")
-		printToFile("current gameState: " .. gameState .. "\n")
-		restartTimer()
-		gameStateIntervals.i = gameStateIntervals.i+1
-		if (gameState - GAME_STATE_CHASE) == 0 then
-			printToFile("....change to scatter\n")
-			gameState = GAME_STATE_SCATTER
-		elseif (gameState - GAME_STATE_SCATTER) == 0 then
-			printToFile("....change to chase\n")
+--	if stopWatch(gameStateIntervals.intervals[gameStateIntervals.i]) then
+--		restartTimer()
+--		gameStateIntervals.i = gameStateIntervals.i+1
+--		if (gameState - GAME_STATE_CHASE) == 0 then
+--			gameState = GAME_STATE_SCATTER
+--		elseif (gameState - GAME_STATE_SCATTER) == 0 then
 			gameState = GAME_STATE_CHASE
-		end
-	end
+--		end
+--	end
 end
 
 -- update player in lua state
@@ -110,29 +108,41 @@ function getNextMoveById(enemy, x, y)
 		else
 			return blinky_ai()
 		end
-	elseif(enemy == ENEMY_TYPE_INKY) then
-		inky.x = x
-		inky.y = y
-		return inky_ai()
 	elseif(enemy == ENEMY_TYPE_PINKY) then
-		pinky.x = x
-		pinky.y = y
-		return pinky_ai()
+		pinky.x = x + 1
+		pinky.y = y + 1
+		if gameState == GAME_STATE_SCATTER then
+			return scatter_ai(pinky)
+		else
+			return pinky_ai()
+		end
+	elseif(enemy == ENEMY_TYPE_INKY) then
+		inky.x = x + 1
+		inky.y = y + 1
+		if gameState == GAME_STATE_SCATTER then
+			return scatter_ai(inky)
+		else
+			return inky_ai()
+		end
 	else
-		clyde.x = x
-		clyde.y = y
-		return clyde_ai()
+		clyde.x = x + 1
+		clyde.y = y + 1
+		if gameState == GAME_STATE_SCATTER then
+			return scatter_ai(clyde)
+		else
+			return clyde_ai()
+		end
 	end
 end
 
 -- specific ai-functions
 function blinky_ai()
 	-- find new tile
-	printToFile("Blinky ai")
+	--printToFile("Blinky ai")
 	--printToFile("Direction in ai" .. blinky.direction)
-	if not blinky.direction then
-		printToFile("blinky direction is nil")
-	end
+	--if not blinky.direction then
+	--	printToFile("blinky direction is nil")
+	--end
 	local nextTile = getNextTile(blinky, player, blinky.direction)
 	local newDirection = findDirection(blinky, nextTile)
 	blinky.direction = newDirection
@@ -140,16 +150,38 @@ function blinky_ai()
 	return newDirection
 end
 
-function inky_ai()
-	return DIRECTION_NONE
+function pinky_ai()
+	local nextTile = getNextTile(pinky, player, pinky.direction)
+	local newDirection = findDirection(pinky, nextTile)
+	pinky.direction = newDirection
+
+	return newDirection
 end
 
-function pinky_ai()
-	return DIRECTION_NONE
+function inky_ai()
+	-- clyde should not move until 30 of the dots are eaten.
+	if consumed_dots < 30 then
+		return DIRECTION_NONE
+	else
+		local nextTile = getNextTile(inky, player, inky.direction)
+		local newDirection = findDirection(inky, nextTile)
+		inky.direction = newDirection
+
+		return newDirection
+	end
 end
 
 function clyde_ai()
-	return DIRECTION_NONE
+	-- clyde should not move until a third of the dots are eaten.
+	if consumed_dots < 82 then
+		return DIRECTION_NONE
+	else
+		local nextTile = getNextTile(clyde, player, clyde.direction)
+		local newDirection = findDirection(clyde, nextTile)
+		clyde.direction = newDirection
+
+		return newDirection
+	end
 end
 
 -- find the next direction according to scatter function
