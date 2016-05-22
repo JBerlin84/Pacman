@@ -128,8 +128,14 @@ end
 -- specific ai-functions
 function blinky_ai()
 	-- find new tile
+	printToFile("Blinky ai")
+	--printToFile("Direction in ai" .. blinky.direction)
+	if not blinky.direction then
+		printToFile("blinky direction is nil")
+	end
 	local nextTile = getNextTile(blinky, player, blinky.direction)
 	local newDirection = findDirection(blinky, nextTile)
+	blinky.direction = newDirection
 
 	return newDirection
 end

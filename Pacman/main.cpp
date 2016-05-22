@@ -57,6 +57,10 @@ bool initializeLuaEnvironment() {
 	lua_pushnumber(luaState, Direction_right);
 	lua_setglobal(luaState, "DIRECTION_RIGHT");
 
+	// Push random global variables
+	lua_pushnumber(luaState, 0);
+	lua_setglobal(luaState, "consumed_foods");
+
 	// Push enemy types
 	lua_pushnumber(luaState, ENEMY_BLINKY);
 	lua_setglobal(luaState, "ENEMY_TYPE_BLINKY");
@@ -131,6 +135,7 @@ bool game_init(HWND) {
 			}
 		}
 	}
+	maxNumberOfFruits = numberOfFruitsLeft;
 
 	player = Character(START_POSITION_X, START_POSITION_Y, 3);
 
@@ -209,11 +214,15 @@ void checkEnemyPlayerCollision() {
 }
 
 void updateLuaState() {
+	// update variables in lua state
+	lua_pushnumber(luaState, maxNumberOfFruits - numberOfFruitsLeft);
+	lua_setglobal(luaState, "consumed_foods");
+
 	// update state
 	lua_getglobal(luaState, "updateLuaState");
 	if (lua_pcall(luaState, 0, 0, 0)) {
 		std::stringstream ss;
-		ss << "Error loading LUA file: " << lua_tostring(luaState, -1);
+		ss << "Error updating lua-state: " << lua_tostring(luaState, -1);
 		engine->message(ss.str());
 	}
 
