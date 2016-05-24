@@ -34,6 +34,10 @@ require "a_star"
 require "timer"
 MAZE = {}
 
+--------------------------------------------------------------------------------
+-- initializations functions
+--------------------------------------------------------------------------------
+
 -- Call this function in the beginning of the program to initialize the
 -- LUA environment.
 function init()
@@ -75,6 +79,9 @@ function printToFile(message)
 	io.close(file)
 end
 
+--------------------------------------------------------------------------------
+-- update functions
+--------------------------------------------------------------------------------
 function updateLuaState()
 	if stopWatch(gameStateIntervals.intervals[gameStateIntervals.i]) then
 		restartTimer()
@@ -119,8 +126,7 @@ function getNextMoveById(enemy, x, y)
 		else
 			return pinky_ai()
 		end
-		-- clyde should not move until 30 of the dots are eaten.
-	elseif(enemy == ENEMY_TYPE_INKY and consumed_dots > 30) then
+	elseif(enemy == ENEMY_TYPE_INKY and consumedDots > 30) then
 		inky.x = x + 1
 		inky.y = y + 1
 		if gameState == GAME_STATE_SCATTER then
@@ -131,7 +137,7 @@ function getNextMoveById(enemy, x, y)
 			return inky_ai()
 		end
 		-- clyde should not move until a third of the dots are eaten.
-	elseif(enemy == ENEMY_TYPE_CLYDE and consumed_dots > 82) then
+	elseif(enemy == ENEMY_TYPE_CLYDE and consumedDots > 82) then
 		clyde.x = x + 1
 		clyde.y = y + 1
 		if gameState == GAME_STATE_SCATTER then
@@ -144,7 +150,10 @@ function getNextMoveById(enemy, x, y)
 	end
 end
 
--- specific ai-functions
+--------------------------------------------------------------------------------
+-- ai functions
+--------------------------------------------------------------------------------
+
 function blinky_ai()  -- red ghost
 	local nextTile = getNextTile(blinky, player, blinky.direction)
 	local newDirection = findDirection(blinky, nextTile)
@@ -167,6 +176,9 @@ function pinky_ai()  -- pink ghost
 		targetTile = {x=player.x+4, y=player.y}
 	end
 
+	local tempX, tempY = clampToMazeCoord(targetTile.x, targetTile.y)
+	targetTile = {x = tempX, y = tempY}
+
 	local nextTile = getNextTile(pinky, targetTile, pinky.direction)
 	local newDirection = findDirection(pinky, nextTile)
 	pinky.direction = newDirection
@@ -186,11 +198,18 @@ function inky_ai()  -- blue ghost
 	else
 		targetTile = {x=player.x+2, y=player.y}
 	end
+	printToFile("inky ai after targetTile\n")
 
 	local deltaX = (blinky.x - targetTile.x) * 2
 	local deltaY = (blinky.y - targetTile.y) * 2
-
+	printToFile("inky ai after delta pos\n")
 	targetTile = {x = (inky.x + deltaX), y = (inky.y + deltaY)}
+
+	local tempX, tempY = clampToMazeCoord(targetTile.x, targetTile.y)
+	targetTile = {x = tempX, y = tempY}
+	
+	printToFile("inky ai after total targetTile\n")
+	printToFile("target: (" .. targetTile.x .. ":" .. targetTile.y .. ")")
 
 	local nextTile = getNextTile(inky, targetTile, inky.direction)
 	local newDirection = findDirection(inky, nextTile)
@@ -227,7 +246,6 @@ end
 
 -- find the next direction when you are frightened
 function frightened_ai(e)
-	printToFile("frightened ai\n")
 	local randX = 0
 	local randY = 0
 
@@ -244,9 +262,33 @@ function frightened_ai(e)
 	return newDirection
 end
 
+--------------------------------------------------------------------------------
+-- Helper functions
+--------------------------------------------------------------------------------
+
 -- check if it is possible to walk on given tile
 function validCoord(xCoord, yCoord)
 	return MAZE[yCoord][xCoord] == 0
+end
+
+-- clamp coord to maze dimensions.
+function clampToMazeCoord(xCoord, yCoord)
+	local newX = xCoord
+	local newY = yCoord
+	if newX < 2 then
+		newX = 2;
+	end
+	if newX >= MAZE_WIDTH then
+		newX = MAZE_WIDTH - 1;
+	end
+	if newY < 2 then
+		newY = 2
+	end
+	if newY >= MAZE_HEIGHT then
+		newY = MAZE_HEIGHT - 1;
+	end
+
+	return newX, newY
 end
 
 -- return direction constant between the two tiles.
