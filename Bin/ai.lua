@@ -155,129 +155,130 @@ end
 --------------------------------------------------------------------------------
 
 function blinky_ai()  -- red ghost
-	if not recalculateDirection(blinky) then
-		return blinky.direction
+	if recalculateDirection(blinky) then
+		local nextTile = getNextTile(blinky, player, blinky.direction)
+		local newDirection = findDirection(blinky, nextTile)
+		blinky.direction = newDirection
 	end
-	
-	local nextTile = getNextTile(blinky, player, blinky.direction)
-	local newDirection = findDirection(blinky, nextTile)
-	blinky.direction = newDirection
 
-	return newDirection
+	return blinky.direction
 end
 
 function pinky_ai()  -- pink ghost
-	-- target tile for pinky is four tiles ahead of pacman
-	-- TODO: Clamp this to world coord
-	local targetTile = {}
-	if player.direction == DIRECTION_UP then
-		targetTile = {x=player.x, y=player.y-4}
-	elseif player.direction == DIRECTION_DOWN then
-		targetTile = {x=player.x, y=player.y+4}
-	elseif player.direction == DIRECTION_LEFT then
-		targetTile = {x=player.x-4, y=player.y}
-	else
-		targetTile = {x=player.x+4, y=player.y}
+	if recalculateDirection(pinky) then
+		-- target tile for pinky is four tiles ahead of pacman
+		local targetTile = {}
+		if player.direction == DIRECTION_UP then
+			targetTile = {x=player.x, y=player.y-4}
+		elseif player.direction == DIRECTION_DOWN then
+			targetTile = {x=player.x, y=player.y+4}
+		elseif player.direction == DIRECTION_LEFT then
+			targetTile = {x=player.x-4, y=player.y}
+		else
+			targetTile = {x=player.x+4, y=player.y}
+		end
+
+		local tempX, tempY = clampToMazeCoord(targetTile.x, targetTile.y)
+		if not validCoord(tempX, tempY) then
+			tempX, tempY = findClosestValidCoord(tempX, tempY)
+		end
+		targetTile = {x = tempX, y = tempY}
+
+		local nextTile = getNextTile(pinky, targetTile, pinky.direction)
+		local newDirection = findDirection(pinky, nextTile)
+		pinky.direction = newDirection
 	end
 
-	local tempX, tempY = clampToMazeCoord(targetTile.x, targetTile.y)
-	if not validCoord(tempX, tempY) then
-		tempX, tempY = findClosestValidCoord(tempX, tempY)
-	end
-	targetTile = {x = tempX, y = tempY}
-
-	printToFile("pinky target: (" .. targetTile.x .. ":" .. targetTile.y .. ")")
-	if MAZE[targetTile.y][targetTile.x] == 1 then
-		printToFile("   -- invalid\n")
-	else
-		printToFile("   -- valid\n")
-	end
-
-	local nextTile = getNextTile(pinky, targetTile, pinky.direction)
-	local newDirection = findDirection(pinky, nextTile)
-	pinky.direction = newDirection
-
-	return newDirection
+	return pinky.direction
 end
 
 function inky_ai()  -- blue ghost
-	local targetTile = {}
-	if player.direction == DIRECTION_UP then
-		targetTile = {x=player.x, y=player.y-2}
-	elseif player.direction == DIRECTION_DOWN then
-		targetTile = {x=player.x, y=player.y+2}
-	elseif player.direction == DIRECTION_LEFT then
-		targetTile = {x=player.x-2, y=player.y}
-	else
-		targetTile = {x=player.x+2, y=player.y}
+	if recalculateDirection(blinky) then
+		local targetTile = {}
+		if player.direction == DIRECTION_UP then
+			targetTile = {x=player.x, y=player.y-2}
+		elseif player.direction == DIRECTION_DOWN then
+			targetTile = {x=player.x, y=player.y+2}
+		elseif player.direction == DIRECTION_LEFT then
+			targetTile = {x=player.x-2, y=player.y}
+		else
+			targetTile = {x=player.x+2, y=player.y}
+		end
+
+		local deltaX = (blinky.x - targetTile.x) * 2
+		local deltaY = (blinky.y - targetTile.y) * 2
+		targetTile = {x = (inky.x + deltaX), y = (inky.y + deltaY)}
+
+		local tempX, tempY = clampToMazeCoord(targetTile.x, targetTile.y)
+		if not validCoord(tempX, tempY) then
+			tempX, tempY = findClosestValidCoord(tempX, tempY)
+		end
+		targetTile = {x = tempX, y = tempY}
+
+		local nextTile = getNextTile(inky, targetTile, inky.direction)
+		local newDirection = findDirection(inky, nextTile)
+		inky.direction = newDirection
 	end
 
-	local deltaX = (blinky.x - targetTile.x) * 2
-	local deltaY = (blinky.y - targetTile.y) * 2
-	targetTile = {x = (inky.x + deltaX), y = (inky.y + deltaY)}
-
-	local tempX, tempY = clampToMazeCoord(targetTile.x, targetTile.y)
-	if not validCoord(tempX, tempY) then
-		tempX, tempY = findClosestValidCoord(tempX, tempY)
-	end
-	targetTile = {x = tempX, y = tempY}
-
-	local nextTile = getNextTile(inky, targetTile, inky.direction)
-	local newDirection = findDirection(inky, nextTile)
-	inky.direction = newDirection
-
-	return newDirection
+	return inky.direction
 end
 
 function clyde_ai()  -- orange ghost
-	local distance = math.abs(clyde.x - player.x) + math.abs(clyde.y - player.y)
+	if recalculateDirection(clyde) then
+		local distance = math.abs(clyde.x - player.x) + math.abs(clyde.y - player.y)
 
-	local targetTile = {}
-	if distance < 9 then
-		targetTile = {x = player.x, y = player.y}
-	else
-		targetTile = clyde.scatter
+		local targetTile = {}
+		if distance < 9 then
+			targetTile = {x = player.x, y = player.y}
+		else
+			targetTile = clyde.scatter
+		end
+
+		local nextTile = getNextTile(clyde, targetTile, clyde.direction)
+		local newDirection = findDirection(clyde, nextTile)
+		clyde.direction = newDirection
 	end
 
-	local nextTile = getNextTile(clyde, targetTile, clyde.direction)
-	local newDirection = findDirection(clyde, nextTile)
-	clyde.direction = newDirection
-
-	return newDirection
+	return clyde.direction
 end
 
 -- find the next direction according to scatter function
 function scatter_ai(e)
-	local nextTile = getNextTile(e, e.scatter, e.direction)
-	local newDirection = findDirection(e, nextTile)
-	e.direction = newDirection
+	if recalculateDirection(e) then
+		local nextTile = getNextTile(e, e.scatter, e.direction)
+		local newDirection = findDirection(e, nextTile)
+		e.direction = newDirection
+	end
 
-	return newDirection
+	return e.direction
 end
 
 -- find the next direction when you are frightened
 function frightened_ai(e)
-	local randX = 0
-	local randY = 0
+	if recalculateDirection(e) then
+		local randX = 0
+		local randY = 0
 
-	randX = math.random(2,MAZE_WIDTH-1)
-	randY = math.random(2,MAZE_HEIGHT-1)
+		randX = math.random(2,MAZE_WIDTH-1)
+		randY = math.random(2,MAZE_HEIGHT-1)
 
-	if not validCoord(randX, randY) then
-		randX, randY = findClosestValidCoord(randX, randY)
+		if not validCoord(randX, randY) then
+			randX, randY = findClosestValidCoord(randX, randY)
+		end
+
+		local nextTile = getNextTile(e, {x=randX, y=randY}, e.direction)
+		local newDirection = findDirection(e, nextTile)
+		e.direction = newDirection
 	end
 
-	local nextTile = getNextTile(e, {x=randX, y=randY}, e.direction)
-	local newDirection = findDirection(e, nextTile)
-	e.direction = newDirection
-
-	return newDirection
+	return e.direction
 end
 
 --------------------------------------------------------------------------------
 -- Helper functions
 --------------------------------------------------------------------------------
 
+-- do a simple check to se wether we need to recalculate direciton.
 function recalculateDirection(char)
 	local validDirections = 0
 
@@ -294,24 +295,24 @@ function recalculateDirection(char)
 		validDirections = validDirections + 1
 	end
 
+
 	-- if there are more than two valid directions, we need to calculate the next direction.
 	if validDirections > 2 then
 		return true
 	end
 
 	-- check if it is valid to go where we want to go, in that case, we dont need to recalculate
-	if direction == DIRECTION_UP then
-		return MAZE[char.y-1][char.x] == 1
-	elseif direction == DIRECTION_DOWN then
-		return MAZE[char.y+1][char.x] == 1
-	elseif direction == DIRECTION_LEFT then
-		return MAZE[char.y][char.x-1] == 1
+	if direction == DIRECTION_UP and MAZE[char.y-1][char.x] == 0 then
+		return false
+	elseif direction == DIRECTION_DOWN and MAZE[char.y+1][char.x] == 0  then
+		return false
+	elseif direction == DIRECTION_LEFT and MAZE[char.y][char.x-1] == 0  then
+		return false
+	elseif direction == DIRECTION_LEFT and MAZE[char.y][char.x+1] == 0  then
+		return false
 	else
-		return MAZE[char.y][char.x+1] == 1
+		return true
 	end
-
-	-- if we for some reason end up here, we need to caluclate the next direction.
-	return true;
 end
 
 -- check if it is possible to walk on given tile
