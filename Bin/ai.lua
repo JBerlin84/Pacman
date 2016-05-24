@@ -177,6 +177,9 @@ function pinky_ai()  -- pink ghost
 	end
 
 	local tempX, tempY = clampToMazeCoord(targetTile.x, targetTile.y)
+	if not validCoord(tempX, tempY) then
+		tempX, tempY = findClosestValidCoord(tempX, tempY)
+	end
 	targetTile = {x = tempX, y = tempY}
 
 	local nextTile = getNextTile(pinky, targetTile, pinky.direction)
@@ -206,8 +209,11 @@ function inky_ai()  -- blue ghost
 	targetTile = {x = (inky.x + deltaX), y = (inky.y + deltaY)}
 
 	local tempX, tempY = clampToMazeCoord(targetTile.x, targetTile.y)
+	if not validCoord(tempX, tempY) then
+		tempX, tempY = findClosestValidCoord(tempX, tempY)
+	end
 	targetTile = {x = tempX, y = tempY}
-	
+
 	printToFile("inky ai after total targetTile\n")
 	printToFile("target: (" .. targetTile.x .. ":" .. targetTile.y .. ")")
 
@@ -289,6 +295,17 @@ function clampToMazeCoord(xCoord, yCoord)
 	end
 
 	return newX, newY
+end
+
+-- find an approximation of the closest coord that is valid
+function findClosestValidCoord(xCoord, yCoord)
+	for i=-1, 1, 1 do
+		for j=-1, 1, 1 do
+			if MAZE[yCoord + i][xCoord + j] == 0 then
+				return (xCoord + dx), (yCoord + dy)
+			end
+		end
+	end
 end
 
 -- return direction constant between the two tiles.
