@@ -200,8 +200,16 @@ function inky_ai()  -- blue ghost
 end
 
 function clyde_ai()  -- orange ghost
+	local distance = math.abs(clyde.x - player.x) + math.abs(clyde.y - player.y)
 
-	local nextTile = getNextTile(clyde, player, clyde.direction)
+	local targetTile = {}
+	if distance < 9 then
+		targetTile = {x = player.x, y = player.y}
+	else
+		targetTile = clyde.scatter
+	end
+
+	local nextTile = getNextTile(clyde, targetTile, clyde.direction)
 	local newDirection = findDirection(clyde, nextTile)
 	clyde.direction = newDirection
 
