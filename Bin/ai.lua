@@ -175,8 +175,24 @@ function pinky_ai()  -- pink ghost
 end
 
 function inky_ai()  -- blue ghost
+	-- TODO: Clamp this to world coord
+	local targetTile = {}
+	if player.direction == DIRECTION_UP then
+		targetTile = {x=player.x, y=player.y-2}
+	elseif player.direction == DIRECTION_DOWN then
+		targetTile = {x=player.x, y=player.y+2}
+	elseif player.direction == DIRECTION_LEFT then
+		targetTile = {x=player.x-2, y=player.y}
+	else
+		targetTile = {x=player.x+2, y=player.y}
+	end
 
-	local nextTile = getNextTile(inky, player, inky.direction)
+	local deltaX = (blinky.x - targetTile.x) * 2
+	local deltaY = (blinky.y - targetTile.y) * 2
+
+	targetTile = {x = (inky.x + deltaX), y = (inky.y + deltaY)}
+
+	local nextTile = getNextTile(inky, targetTile, inky.direction)
 	local newDirection = findDirection(inky, nextTile)
 	inky.direction = newDirection
 
