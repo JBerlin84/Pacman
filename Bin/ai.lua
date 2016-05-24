@@ -119,6 +119,7 @@ function getNextMoveById(enemy, x, y)
 		else
 			return pinky_ai()
 		end
+		-- clyde should not move until 30 of the dots are eaten.
 	elseif(enemy == ENEMY_TYPE_INKY and consumed_dots > 30) then
 		inky.x = x + 1
 		inky.y = y + 1
@@ -129,6 +130,7 @@ function getNextMoveById(enemy, x, y)
 		else
 			return inky_ai()
 		end
+		-- clyde should not move until a third of the dots are eaten.
 	elseif(enemy == ENEMY_TYPE_CLYDE and consumed_dots > 82) then
 		clyde.x = x + 1
 		clyde.y = y + 1
@@ -143,7 +145,7 @@ function getNextMoveById(enemy, x, y)
 end
 
 -- specific ai-functions
-function blinky_ai()
+function blinky_ai()  -- red ghost
 	local nextTile = getNextTile(blinky, player, blinky.direction)
 	local newDirection = findDirection(blinky, nextTile)
 	blinky.direction = newDirection
@@ -151,16 +153,29 @@ function blinky_ai()
 	return newDirection
 end
 
-function pinky_ai()
-	local nextTile = getNextTile(pinky, player, pinky.direction)
+function pinky_ai()  -- pink ghost
+	-- target tile for pinky is four tiles ahead of pacman
+	-- TODO: Clamp this to world coord
+	local targetTile = {}
+	if player.direction == DIRECTION_UP then
+		targetTile = {x=player.x, y=player.y-4}
+	elseif player.direction == DIRECTION_DOWN then
+		targetTile = {x=player.x, y=player.y+4}
+	elseif player.direction == DIRECTION_LEFT then
+		targetTile = {x=player.x-4, y=player.y}
+	else
+		targetTile = {x=player.x+4, y=player.y}
+	end
+
+	local nextTile = getNextTile(pinky, targetTile, pinky.direction)
 	local newDirection = findDirection(pinky, nextTile)
 	pinky.direction = newDirection
 
 	return newDirection
 end
 
-function inky_ai()
-	-- clyde should not move until 30 of the dots are eaten.
+function inky_ai()  -- blue ghost
+
 	local nextTile = getNextTile(inky, player, inky.direction)
 	local newDirection = findDirection(inky, nextTile)
 	inky.direction = newDirection
@@ -168,8 +183,8 @@ function inky_ai()
 	return newDirection
 end
 
-function clyde_ai()
-	-- clyde should not move until a third of the dots are eaten.
+function clyde_ai()  -- orange ghost
+
 	local nextTile = getNextTile(clyde, player, clyde.direction)
 	local newDirection = findDirection(clyde, nextTile)
 	clyde.direction = newDirection
@@ -205,10 +220,12 @@ function frightened_ai(e)
 	return newDirection
 end
 
+-- check if it is possible to walk on given tile
 function validCoord(xCoord, yCoord)
 	return MAZE[yCoord][xCoord] == 0
 end
 
+-- return direction constant between the two tiles.
 function findDirection(position, nextTile)
 	  -- find the new direction
 	  local newDirection = 0
