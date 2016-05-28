@@ -1,21 +1,9 @@
--- start lua53.exe
--- dofile("a_star.lua")
--- start()
-
---require "test"
---[[
-function start()
-  local start = {x=2, y=2}
-  local goal = {x=8, y=6}
-
-  local nextDirection = getNextDirection(start, goal, DIRECTION_RIGHT)
-end]]
 
 function getNextTile(position, target, direction)
   -- fetch all possible tiles.
   local allNodes = createNodeList(position, target)
 
-  -- remove node behind enemy, we are not allowed to change to opposite direction unless state change.
+  -- remove node behind enemy, we are not allowed to change to opposite direction.
   local nodeToRemove={x=0, y=0}
   if direction == DIRECTION_UP then
     nodeToRemove={x=position.x, y=position.y+1}
@@ -30,6 +18,10 @@ function getNextTile(position, target, direction)
 
   -- get the next tile
   local path = aStar(position, target, allNodes)
+
+  if path == nil then
+    return nil
+  end
 
   return path[2]  -- the second tile is the next one to step on.
 end
@@ -72,6 +64,7 @@ function aStar ( start, goal, nodes )
       end
     end
   end
+  return nil
 end
 
 function createNodeList(start, goal)

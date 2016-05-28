@@ -206,9 +206,11 @@ void checkEnemyPlayerCollision() {
 	if(!player.isHuntingTime()) {
 		for(int i=0;i<4;i++) {
 			if(player.x == enemies[i]->x && player.y == enemies[i]->y) {
-				--player.lives;
-				player.x = START_POSITION_X;
-				player.y = START_POSITION_Y;
+				if (!enemies[i]->getDead()) {
+					--player.lives;
+					player.x = START_POSITION_X;
+					player.y = START_POSITION_Y;
+				}
 			}
 		}
 	}
@@ -216,6 +218,7 @@ void checkEnemyPlayerCollision() {
 		for (int i = 0; i<4; i++) {
 			if (player.x == enemies[i]->x && player.y == enemies[i]->y) {
 				enemies[i]->setDead(true);
+				player.points += 200;
 			}
 		}
 	}

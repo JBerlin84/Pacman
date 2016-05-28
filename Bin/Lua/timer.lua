@@ -1,5 +1,5 @@
-gameStateIntervals = {i = 1, intervals={7, 20, 7, 20, 5, 20, 5, math.maxinteger}}
---gameStateIntervals = {i = 1, intervals={2, 3, 2, 3, 2, 3, 2, math.maxinteger}}
+--gameStateIntervals = {i = 1, intervals={7, 20, 7, 20, 5, 20, 5, math.maxinteger}}
+gameStateIntervals = {i = 1, intervals={2, 30, 2, 30, 2, 30, 2, math.maxinteger}}
 
 -- restart the timer
 function restartTimer()
