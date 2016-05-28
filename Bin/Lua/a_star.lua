@@ -1,4 +1,5 @@
-
+-- fetch the next tile to walk to.
+-- used in the game.
 function getNextTile(position, target, direction)
   -- fetch all possible tiles.
   local allNodes = createNodeList(position, target)
@@ -19,6 +20,7 @@ function getNextTile(position, target, direction)
   -- get the next tile
   local path = aStar(position, target, allNodes)
 
+  -- no path could be found.
   if path == nil then
     return nil
   end
@@ -26,7 +28,7 @@ function getNextTile(position, target, direction)
   return path[2]  -- the second tile is the next one to step on.
 end
 
-
+-- the A* algorithm itself.
 function aStar ( start, goal, nodes )
   local closedset = {}
   local openset = { start }
@@ -67,8 +69,12 @@ function aStar ( start, goal, nodes )
   return nil
 end
 
+--------------------------------------------------------------------------------
+-- Helper functions
+--------------------------------------------------------------------------------
+
+-- create a list with all valid nodes.
 function createNodeList(start, goal)
-  --local nodeList = {start, goal}
   local nodeList = {}
   for iy=1, #MAZE do
     for ix=1, #MAZE[iy] do
@@ -76,13 +82,10 @@ function createNodeList(start, goal)
         local n={x=ix, y=iy}
         if equals(n, start) then
           table.insert(nodeList, start)
-          --nodeList[#nodeList+1] = start
         elseif equals(n, goal) then
           table.insert(nodeList, goal)
-          --nodeList[#nodeList+1] = goal
         else
           table.insert(nodeList, n)
-          --nodeList[#nodeList+1] = n
         end
       end
     end
@@ -90,7 +93,7 @@ function createNodeList(start, goal)
   return nodeList
 end
 
--- Helper functions
+-- check if two nodes are equal.
 function equals(n1, n2)
   if not n1 then
     return false
@@ -103,6 +106,7 @@ function equals(n1, n2)
   end
 end
 
+-- calculate the heuristic cost estimate.
 function heuristic_cost_estimate(start, goal)
   -- heuristic cost estimate using manhattan distance.
   local dx = math.abs(start.x - goal.x)
@@ -110,6 +114,7 @@ function heuristic_cost_estimate(start, goal)
   return dx + dy
 end
 
+-- fetch the lowest f-score in the set
 function fetch_lowest_fscore(set, f_score)
   local lowestScore = 1000
   local bestNode = nil
@@ -124,6 +129,7 @@ function fetch_lowest_fscore(set, f_score)
   return bestNode
 end
 
+-- delete a node if it exists
 function remove_node(set, node)
   for q, n in ipairs(set) do
     if equals(n,node) then
@@ -134,6 +140,7 @@ function remove_node(set, node)
   end
 end
 
+-- fetch all the neighbors for the given node
 function getNeighbors(node, nodes)
   local neighbors = {}
   local nx = node.x
@@ -170,6 +177,7 @@ function getNeighbors(node, nodes)
   return neighbors
 end
 
+-- is the node in the set?
 function inSet(set, node)
   for _, n in ipairs(set) do
     if equals(n,node) then
@@ -179,6 +187,7 @@ function inSet(set, node)
   return false
 end
 
+-- used to fetch the entire path
 function unwindPath(path, set, current)
   if set[current] then
     table.insert(path, 1, set[current])
