@@ -6,10 +6,20 @@
 class Enemy : public Character {
 private:
 	int enemyType;
+	bool dead;
 
 public:
 	Enemy(int x, int y, int enemyType) : Character(x, y, INT_MAX){
 		this->enemyType = enemyType;
+		dead = false;
+	}
+
+	void setDead(bool value) {
+		dead = value;
+	}
+
+	bool getDead() {
+		return dead;
 	}
 
 	void update() {
@@ -20,7 +30,8 @@ public:
 			lua_pushnumber(luaState, enemyType);	// which enemy are we?
 			lua_pushnumber(luaState, x);			// which x-coord do we have?
 			lua_pushnumber(luaState, y);			// which y-coord do we have?
-			lua_pcall(luaState, 3, 1, 0);			// Tar tre argument, returnerar två, ingen felhantering
+			lua_pushnumber(luaState, dead);		// is the enemy dead?
+			lua_pcall(luaState, 4, 1, 0);			// Tar tre argument, returnerar två, ingen felhantering
 			Direction newDirection = (Direction)(int)lua_tonumber(luaState, -1);		// for some reason lua_tointeger won't work, even if i send integer.
 			lua_pop(luaState, 1);
 
@@ -68,6 +79,9 @@ public:
 		iy = 0;
 		lerpAmmount = 0;
 
+		if (dead && x == 11 && y == 15) {
+			dead = false;
+		}
 	}
 
 	int getCurrentSprite(int version) {
@@ -89,6 +103,9 @@ public:
 		
 		if(isHuntingTime()) {
 			currentSprite = ENEMY_SCARED;
+		}
+		if (dead) {
+			currentSprite = ENEMY_DEAD;
 		}
 
 		currentSprite += version-1;

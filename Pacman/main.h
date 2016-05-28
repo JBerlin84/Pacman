@@ -30,7 +30,7 @@ lua_State* luaState;	// lua environment
 #define FULLSCREEN false
 #define APPLICATION_TITLE "Pacman"
 
-#define DEBUG_BUILD true
+#define DEBUG_BUILD false
 
 // Sprite sheet params
 #define TILE_WIDTH 32
@@ -61,6 +61,7 @@ lua_State* luaState;	// lua environment
 #define ENEMY_PINKY 4
 #define ENEMY_CLYDE 6
 #define ENEMY_SCARED 12
+#define ENEMY_DEAD 40
 
 // Combined params for player and enemy
 #define HUNTING_TIME 10000

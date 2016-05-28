@@ -27,7 +27,7 @@ bool game_preload() {
 	// Lua test
 	luaState = luaL_newstate();
 	luaL_openlibs(luaState);
-	int luaError = luaL_dofile(luaState, "ai.lua");
+	int luaError = luaL_dofile(luaState, "Lua\\ai.lua");
 	if (luaError) {
 		std::stringstream ss;
 		ss << "Error loading LUA file: " << lua_tostring(luaState, -1);
@@ -209,6 +209,13 @@ void checkEnemyPlayerCollision() {
 				--player.lives;
 				player.x = START_POSITION_X;
 				player.y = START_POSITION_Y;
+			}
+		}
+	}
+	else {
+		for (int i = 0; i<4; i++) {
+			if (player.x == enemies[i]->x && player.y == enemies[i]->y) {
+				enemies[i]->setDead(true);
 			}
 		}
 	}
