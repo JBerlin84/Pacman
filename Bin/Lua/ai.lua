@@ -165,7 +165,8 @@ end
 function blinky_ai()  -- red ghost
 	local nextTile = getNextTile(blinky, player, blinky.direction)
 	if nextTile == nil then
-		printToFile("blinky could not find path\n")
+		-- make sure we dont get stuck.
+		nextTile = getNextTile(blinky, deadTarget, blinky.direction)
 	end
 	local newDirection = findDirection(blinky, nextTile)
 	blinky.direction = newDirection
@@ -194,8 +195,8 @@ function pinky_ai()  -- pink ghost
 
 	local nextTile = getNextTile(pinky, targetTile, pinky.direction)
 	if nextTile == nil then
-		-- emergency solution for a bug.
-		nextTile = getNextTile(inky, inky.scatter, inky.direction)
+		-- make sure we dont get stuck.
+		nextTile = getNextTile(pinky, deadTarget, pinky.direction)
 	end
 	local newDirection = findDirection(pinky, nextTile)
 	pinky.direction = newDirection
@@ -227,8 +228,8 @@ function inky_ai()  -- blue ghost
 
 	local nextTile = getNextTile(inky, targetTile, inky.direction)
 	if nextTile == nil then
-		-- emergency solution for a bug.
-		nextTile = getNextTile(inky, inky.scatter, inky.direction)
+		-- make sure we dont get stuck.
+		nextTile = getNextTile(inky, deadTarget, inky.direction)
 	end
 	local newDirection = findDirection(inky, nextTile)
 	inky.direction = newDirection
@@ -248,7 +249,8 @@ function clyde_ai()  -- orange ghost
 
 	local nextTile = getNextTile(clyde, targetTile, clyde.direction)
 	if nextTile == nil then
-		printToFile("clyde could not find path\n")
+		-- make sure we dont get stuck.
+		nextTile = getNextTile(clyde, deadTarget, clyde.direction)
 	end
 	local newDirection = findDirection(clyde, nextTile)
 	clyde.direction = newDirection
@@ -267,6 +269,10 @@ end
 -- find the next direction according to scatter function
 function scatter_ai(e)
 	local nextTile = getNextTile(e, e.scatter, e.direction)
+	if nextTile == nil then
+		-- make sure we dont get stuck.
+		nextTile = getNextTile(e, deadTarget, e.direction)
+	end
 	local newDirection = findDirection(e, nextTile)
 	e.direction = newDirection
 
